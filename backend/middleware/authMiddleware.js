@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 //middleware to protect routes
-const authMiddleware = async (req, res, next) => {
+const protect = async (req, res, next) => {
   let token;
 
   if (
@@ -25,4 +25,13 @@ const authMiddleware = async (req, res, next) => {
     res.status(401).json({ message: "Not authorized, no token" });
   }
 };
-module.exports = authMiddleware;
+
+//Middleware to check admin role
+const admin = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    res.status(403).json({ message: "Admin access required" });
+  }
+};
+module.exports = { protect, admin };

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router(); //route instance
 const User = require("../models/user");
-const protect = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authMiddleware");
 const jwt = require("jsonwebtoken");
 const { model } = require("mongoose");
 
