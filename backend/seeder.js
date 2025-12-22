@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Product = require("./models/Product");
 const User = require("./models/user");
+const Cart = reqyuire("./models/Cart.js");
 const products = require("./data/products");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -14,6 +15,7 @@ const seedData = async () => {
     //Clear existing data
     await Product.deleteMany();
     await User.deleteMany();
+    await Cart.deletemany();
     console.log("Existing data cleared");
 
     //Create a default admin user
