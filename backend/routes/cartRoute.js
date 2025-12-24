@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
 
       if (productIndex > -1) {
         //If the product already exists, update the quantity
-        cart.products[productIndex].quantity += quantity;
+        cart.products[productIndex].quantity += Number(quantity);
       } else {
         //add new product
         cart.products.push({
@@ -61,7 +61,7 @@ router.post("/", async (req, res) => {
     } else {
       //Create a new cart for the guest or user
       const newCart = await Cart.create({
-        userId: userId ? userId : undefined,
+        user: userId ? userId : undefined,
         guestId: guestId ? guestId : "guest_" + new Date().getTime(),
         products: [
           {
@@ -81,6 +81,45 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
+  }
+});
+
+//@route PUT /api/cart
+//@desc Update product quantity in the cart for a guest or logged in user
+//@access Public
+router.put("/", async (req, res) => {
+  const { productId, quantity, size, color, guestId, userId } = req.body;
+  try {
+    let cart = await getCart(userId, guestId);
+    if (!cart) return res.status(404).json({ message: "Cart Not Found" });
+
+    const productIndex = cart.products.findIndex(
+      (p) =>
+        p.productId.toString() === productId &&
+        p.size === size &&
+        p.color === color
+    );
+
+    if (productIndex > -1) {
+      //update quantity
+      if (quantity > 0) {
+        cart.products[productIndex].quantity = quantity;
+      } else {
+        cart.products.splice(productIndex, 1); // Remove product if quantity is 0
+      }
+
+      cart.totalPrice = cart.products.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+      await cart.save();
+      return res.status(200).json(cart);
+    } else {
+      return res.status(404).json({ message: "Product not found in cart" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ messgae: "Server Error" });
   }
 });
 
