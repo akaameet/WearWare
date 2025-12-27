@@ -4,13 +4,13 @@ const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
 const { protect } = require("../middleware/authMiddleware");
-const router = express.Router();
+const route = express.Router();
 
 //@route POST /api/checkout
 //@desc Create a new checkout session
 //@access Private
 
-router.post("/", protect, async (req, res) => {
+route.post("/", protect, async (req, res) => {
   const { checkoutItems, shippingAddress, paymentMethod, totalPrice } =
     req.body;
   if (!checkoutItems || checkoutItems.length === 0) {
@@ -38,7 +38,7 @@ router.post("/", protect, async (req, res) => {
 //@ route PUT /api/checkout/:id/pay
 // @desc Update checkout to mark as paid after successful payment
 // @access Private
-router.put("/:id/pay", protect, async (req, res) => {
+route.put("/:id/pay", protect, async (req, res) => {
   const { paymentStatus, paymentDetails } = req.body;
   try {
     const checkout = await Checkout.findById(req.params.id);
@@ -64,7 +64,7 @@ router.put("/:id/pay", protect, async (req, res) => {
 //@route POST /api/checkout/:id/finslise
 //@desc Finalize checkout and convert to an order after payment confirmation
 //@access Private
-router.post("/:id/finalize", protect, async (req, res) => {
+route.post("/:id/finalize", protect, async (req, res) => {
   try {
     const checkout = await Checkout.findById(req.params.id);
     if (!checkout) {
@@ -74,7 +74,7 @@ router.post("/:id/finalize", protect, async (req, res) => {
       //Create final order based on the checkout details
       const finalOrder = await Order.create({
         user: checkout.user,
-        orderItems: checkout.shippingAddress,
+        orderItems: checkout.checkoutItems,
         paymentMethod: checkout.paymentMethod,
         shippingAddress: checkout.shippingAddress,
         totalPrice: checkout.totalPrice,
@@ -102,4 +102,4 @@ router.post("/:id/finalize", protect, async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
-module.exports = router;
+module.exports = route;
