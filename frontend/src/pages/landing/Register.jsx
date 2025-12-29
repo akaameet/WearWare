@@ -1,23 +1,27 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import login from '../../assets/login2.jpg';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import login from "../../assets/login2.jpg";
+import { registerUser } from "../../../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const dispatch = useDispatch();
   const handleSubmit = (e) => {
-      e.preventDefault();
-  }
-  
+    e.preventDefault();
+    dispatch(registerUser({ name, email, password }));
+  };
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center bg-gray-100">
-      
       {/* Left: Register Form */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12">
-        <form onClick={handleSubmit} className="w-full max-w-md bg-white p-8 rounded-lg border shadow-lg">
+        <form
+          onClick={handleSubmit}
+          className="w-full max-w-md bg-white p-8 rounded-lg border shadow-lg"
+        >
           <div className="flex justify-center mb-6">
             <h2 className="text-2xl font-medium text-center">Register</h2>
           </div>

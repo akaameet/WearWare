@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import login from '../../assets/login4.jpg';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import login from "../../assets/login4.jpg";
+import { loginUser } from "../../../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
-  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(loginUser({ email, password }));
+  };
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center bg-gray-100">
-      
       {/* Left: Login Form */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12">
-        <form onClick={handleSubmit} className="w-full max-w-md bg-white p-8 rounded-lg border shadow-sm">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-md bg-white p-8 rounded-lg border shadow-sm"
+        >
           <div className="flex justify-center mb-6">
             <h2 className="text-2xl font-medium text-center">Login</h2>
           </div>
@@ -63,11 +69,7 @@ const Login = () => {
 
       {/* Right: Image */}
       <div className="hidden md:block w-1/2 h-full">
-        <img
-          src={login}
-          alt="Login"
-          className="h-screen w-full object-cover"
-        />
+        <img src={login} alt="Login" className="h-screen w-full object-cover" />
       </div>
     </div>
   );

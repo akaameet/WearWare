@@ -21,38 +21,47 @@ import OrderConfirmation from "./pages/landing/OrderConfirmation";
 import OrderDetailPage from "./pages/user/OrderDetailPage";
 import AdminOverlay from "./pages/admin/AdminOverlay";
 import MemberOverlay from "./pages/user/MemberOverlay";
+
+import { Provider } from "react-redux";
+import store from "../redux/store";
+
 function App() {
   return (
-    <BrowserRouter>
-      <Toaster position="top-right" />
-      <Routes>
-        <Route path="/" element={<UserLayout />}>
-          {/* User Layout */}
-          <Route index element={<Home />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="collections/:collection" element={<CollectionPage />} />
-          <Route path="product/:id" element={<ProductDetails />} />
-          <Route path="checkout" element={<Checkout />} />
-          <Route path="order-confirmation" element={<OrderConfirmation />} />
-        </Route>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Toaster position="top-right" />
+        <Routes>
+          <Route path="/" element={<UserLayout />}>
+            {/* User Layout */}
+            <Route index element={<Home />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route
+              path="collections/:collection"
+              element={<CollectionPage />}
+            />
+            <Route path="product/:id" element={<ProductDetails />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="order-confirmation" element={<OrderConfirmation />} />
+          </Route>
 
-        <Route path="/member" element={<MemberOverlay />}>
-          <Route path="profile" element={<Profile />} />
-          <Route path="wishlist" element={<WishList />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="orders/:id" element={<OrderDetailPage />} />
-        </Route>
+          <Route path="/member" element={<MemberOverlay />}>
+            <Route path="profile" element={<Profile />} />
+            <Route path="wishlist" element={<WishList />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="orders/:id" element={<OrderDetailPage />} />
+          </Route>
 
-        <Route path="/admin" element={<AdminOverlay />}>
-          <Route path="dashboard" element={<DashBoard />} />
-          <Route path="products" element={<ManageProducts />} />
-          <Route path="products/:id/edit" element={<EditProduct />} />
-          <Route path="orders" element={<ManageOrders />} />
-          <Route path="users" element={<ManageUsers />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          <Route path="/admin" element={<AdminOverlay />}>
+            <Route path="dashboard" element={<DashBoard />} />
+            <Route path="products" element={<ManageProducts />} />
+            <Route path="products/:id/edit" element={<EditProduct />} />
+            <Route path="orders" element={<ManageOrders />} />
+            <Route path="users" element={<ManageUsers />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
 
