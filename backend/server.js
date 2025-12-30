@@ -9,6 +9,9 @@ const checkoutRoutes = require("./routes/checkoutRoute");
 const orderRoutes = require("./routes/orderRoute");
 const uploadRoutes = require("./routes/uploadRoute");
 const subscribeRoutes = require("./routes/subscribeRoute");
+const adminRoutes = require("./routes/adminRoute");
+const productAdminRoutes = require("./routes/productAdminRoute");
+const adminOrderRoutes = require("./routes/adminOrderRoute");
 dotenv.config();
 
 const app = express(); //initialize express app
@@ -30,6 +33,9 @@ app.use("/api/checkout", checkoutRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/", subscribeRoutes);
+app.use("/api/admin/users", adminRoutes);
+app.use("/api/admin/products", productAdminRoutes);
+app.use("/api/admin/orders", adminOrderRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
