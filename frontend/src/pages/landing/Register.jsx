@@ -19,7 +19,7 @@ const Register = () => {
       {/* Left: Register Form */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12">
         <form
-          onClick={handleSubmit}
+          onSubmit={handleSubmit}
           className="w-full max-w-md bg-white p-8 rounded-lg border shadow-lg"
         >
           <div className="flex justify-center mb-6">
