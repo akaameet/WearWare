@@ -1,8 +1,4 @@
-import {
-  createSlice,
-  createAyncThunk,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 //Helper function to load cart from localStorage
@@ -16,9 +12,9 @@ const saveCartToStorage = (cart) => {
 };
 
 //fetch cart for a user or get
-export const fetchCart = createAyncThunk(
+export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
-  async ({ userId, guestId }, { rejecteWithValue }) => {
+  async ({ userId, guestId }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
@@ -27,7 +23,7 @@ export const fetchCart = createAyncThunk(
       return response.data;
     } catch (error) {
       console.error(error);
-      return rejecteWithValue(error.response.data);
+      return rejectWithValue(error.response.data);
     }
   }
 );
@@ -37,7 +33,7 @@ export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async (
     { productId, quantity, size, color, guestId, userId },
-    { rejecteWithValue }
+    { rejectWithValue }
   ) => {
     try {
       const response = await axios.post(
@@ -54,7 +50,7 @@ export const addToCart = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error(error);
-      return rejecteWithValue(error.response.data);
+      return rejectWithValue(error.response.data);
     }
   }
 );
