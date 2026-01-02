@@ -8,8 +8,10 @@ const router = express.Router();
 //helper function to get cart by user Id or Guest Id
 const getCart = async (userId, guestId) => {
   if (userId) {
-    return await Cart.findOne({ user: userId });
-  } else if (guestId) {
+    const userCart = await Cart.findOne({ user: userId });
+    if (userCart) return userCart;
+  }
+  if (guestId) {
     return await Cart.findOne({ guestId });
   }
   return null;
@@ -44,7 +46,7 @@ router.post("/", async (req, res) => {
           productId,
           name: product.name,
           image: product.images[0].url,
-          price: product.price,
+          price: Number(product.price),
           size,
           color,
           quantity,
@@ -67,13 +69,13 @@ router.post("/", async (req, res) => {
             productId,
             name: product.name,
             image: product.images[0].url,
-            price: product.price,
+            price: Number(product.price),
             size,
             color,
             quantity,
           },
         ],
-        totalPrice: product.price * quantity,
+        totalPrice: Number(product.price) * Number(quantity),
       });
       return res.status(201).json(newCart);
     }
@@ -106,11 +108,11 @@ router.put("/", async (req, res) => {
       } else {
         cart.products.splice(productIndex, 1); // Remove product if quantity is 0
       }
-
       cart.totalPrice = cart.products.reduce(
-        (acc, item) => acc + item.price * item.quantity,
+        (acc, item) => acc + Number(item.price) * Number(item.quantity),
         0
       );
+
       await cart.save();
       return res.status(200).json(cart);
     } else {
@@ -140,9 +142,10 @@ router.delete("/", async (req, res) => {
     if (productIndex > -1) {
       cart.products.splice(productIndex, 1);
       cart.totalPrice = cart.products.reduce(
-        (acc, item) => acc + item.price * item.quantity,
+        (acc, item) => acc + Number(item.price) * Number(item.quantity),
         0
       );
+
       await cart.save();
       return res.status(200).json(cart);
     } else {
@@ -200,11 +203,14 @@ router.post("/merge", protect, async (req, res) => {
             userCart.products[productIndex].quantity += guestItem.quantity;
           } else {
             //Otherwise, add the guest item in the cart
-            userCart.products.push(guestItem);
+            userCart.products.push({
+              ...guestItem.toObject(),
+              price: Number(guestItem.price),
+            });
           }
         });
         userCart.totalPrice = userCart.products.reduce(
-          (acc, item) => acc + item.price * item.quantity,
+          (acc, item) => acc + Number(item.price) * Number(item.quantity),
           0
         );
         await userCart.save();

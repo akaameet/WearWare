@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
+
     email: {
       type: String,
       required: true,
@@ -15,16 +16,34 @@ const userSchema = new mongoose.Schema(
         "Please fill a valid email address",
       ],
     },
+
     password: {
       type: String,
       required: true,
-      minlength: [6, "Password must be at least 6 characters"],
+      minlength: 6,
       match: [
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
-        "Password must contain uppercase, lowercase, number, and special character",
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/,
+        "Password must contain uppercase, lowercase, number & special character",
       ],
     },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
+
+    phone: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    address: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
   },
   { timestamps: true }
 );
@@ -37,7 +56,7 @@ userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Method to compare passwords
+// Compare passwords
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
